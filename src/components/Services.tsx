@@ -19,16 +19,21 @@ export default function Services({ onBookService }: ServicesProps) {
 
   const fetchServices = async () => {
     try {
+      console.log('Fetching services from Supabase...');
       const { data, error } = await supabase
         .from('services')
         .select('*')
         .order('category', { ascending: true })
         .order('price', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching services:', error);
+        throw error;
+      }
+      console.log('Services fetched successfully:', data);
       setServices(data || []);
     } catch (error) {
-      // Silently handle error
+      console.error('Exception while fetching services:', error);
     } finally {
       setLoading(false);
     }
