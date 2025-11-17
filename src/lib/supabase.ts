@@ -3,10 +3,6 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log('Supabase Configuration Check:');
-console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Configured ✓' : 'MISSING ✗');
-console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Configured ✓' : 'MISSING ✗');
-
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('ERRO: Variáveis de ambiente do Supabase não configuradas!');
   console.error('VITE_SUPABASE_URL:', supabaseUrl ? 'OK' : 'FALTA');

@@ -8,7 +8,6 @@ import Testimonials from '../components/Testimonials';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import Booking from '../components/Booking';
-import ServicesDiagnostic from '../components/ServicesDiagnostic';
 
 export default function HomePage() {
   const [currentSection, setCurrentSection] = useState('home');
@@ -130,8 +129,6 @@ export default function HomePage() {
           }}
         />
       )}
-
-      <ServicesDiagnostic />
     </div>
   );
 }
