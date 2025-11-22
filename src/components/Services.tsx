@@ -12,6 +12,7 @@ export default function Services({ onBookService }: ServicesProps) {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchServices();
@@ -19,16 +20,24 @@ export default function Services({ onBookService }: ServicesProps) {
 
   const fetchServices = async () => {
     try {
+      console.log('Fetching services from Supabase...');
       const { data, error } = await supabase
         .from('services')
         .select('*')
         .order('category', { ascending: true })
         .order('price', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Services loaded:', data);
       setServices(data || []);
+      setError(null);
     } catch (error) {
-      // Silently handle error
+      console.error('Failed to fetch services:', error);
+      setError(error instanceof Error ? error.message : 'Erro ao carregar serviços');
     } finally {
       setLoading(false);
     }
@@ -106,11 +115,26 @@ export default function Services({ onBookService }: ServicesProps) {
           </div>
         </div>
 
-        {loading ? (
+        {error && (
+          <div className="text-center py-12">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg max-w-2xl mx-auto">
+              <p className="font-semibold mb-2">Erro ao carregar serviços</p>
+              <p className="text-sm">{error}</p>
+              <button
+                onClick={fetchServices}
+                className="mt-4 bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-colors"
+              >
+                Tentar Novamente
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!error && loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
           </div>
-        ) : services.length > 0 ? (
+        ) : !error && services.length > 0 ? (
           <div className="space-y-16">
             {activeFilter === 'all' ? (
               orderedCategories.map((category) => {
@@ -138,7 +162,7 @@ export default function Services({ onBookService }: ServicesProps) {
               </div>
             )}
           </div>
-        ) : (
+        ) : !error && (
           <div className="text-center py-12 text-gray-500">
             Nenhum serviço disponível no momento.
           </div>

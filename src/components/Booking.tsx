@@ -34,16 +34,22 @@ export default function Booking({ preselectedServiceId, onClose }: BookingProps)
 
   const fetchServices = async () => {
     try {
+      console.log('Booking: Fetching services from Supabase...');
       const { data, error } = await supabase
         .from('services')
         .select('*')
         .order('category', { ascending: true })
         .order('name', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Booking: Supabase error:', error);
+        throw error;
+      }
+      console.log('Booking: Services loaded:', data);
       setServices(data || []);
     } catch (error) {
-      // Silently handle error
+      console.error('Booking: Failed to fetch services:', error);
+      alert('Erro ao carregar serviços. Por favor, tente novamente.');
     }
   };
 
@@ -52,16 +58,22 @@ export default function Booking({ preselectedServiceId, onClose }: BookingProps)
     setLoading(true);
 
     try {
+      console.log('Submitting booking:', formData);
       const { error } = await supabase.from('bookings').insert([formData]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Booking error:', error);
+        throw error;
+      }
 
+      console.log('Booking submitted successfully');
       setSubmitted(true);
       setTimeout(() => {
         onClose();
       }, 3000);
     } catch (error) {
-      // Silently handle error
+      console.error('Failed to submit booking:', error);
+      alert('Erro ao efetuar o agendamento. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
