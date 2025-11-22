@@ -137,11 +137,12 @@ export default function Booking({ preselectedServiceId, onClose }: BookingProps)
               >
                 <option value="">Escolha um serviço...</option>
                 {services.reduce((acc, service) => {
-                  const lastCategory = acc.length > 0 ? acc[acc.length - 1].category : null;
+                  const lastItem = acc.length > 0 ? acc[acc.length - 1] : null;
+                  const lastCategory = lastItem && lastItem.type === 'category' ? lastItem.category : (lastItem && lastItem.type === 'service' ? lastItem.service.category : null);
                   if (service.category !== lastCategory) {
-                    acc.push({ type: 'category', category: service.category });
+                    acc.push({ type: 'category' as const, category: service.category });
                   }
-                  acc.push({ type: 'service', service });
+                  acc.push({ type: 'service' as const, service });
                   return acc;
                 }, [] as Array<{ type: 'category', category: string } | { type: 'service', service: Service }>).map((item, index) => {
                   if (item.type === 'category') {

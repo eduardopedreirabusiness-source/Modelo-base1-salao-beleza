@@ -15,6 +15,11 @@ export default function Services({ onBookService }: ServicesProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('Services component mounted');
+    console.log('Environment check:', {
+      url: import.meta.env.VITE_SUPABASE_URL,
+      keyPresent: !!import.meta.env.VITE_SUPABASE_ANON_KEY
+    });
     fetchServices();
   }, []);
 
@@ -78,6 +83,10 @@ export default function Services({ onBookService }: ServicesProps) {
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Descubra a nossa gama completa de serviços de beleza profissionais.
           </p>
+          {/* Debug info */}
+          <div className="mt-4 text-xs text-gray-400">
+            Debug: {loading ? 'Loading...' : `${services.length} services loaded`} | Error: {error ? 'Yes' : 'No'}
+          </div>
         </div>
 
         <div className="flex justify-center mb-12">
